@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commodity Price Insights Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>📊 Commodity Price Insights Dashboard</h1>
+        <p class="subtitle">Upload commodity price data to generate period returns, yearly analysis, and weekly movement insights</p>
+    </header>
+
+    <main>
+        <!-- Upload Section -->
+        <section id="upload-section" class="card">
+            <h2>📁 Data Upload</h2>
+            <p>Upload a CSV file with commodity prices. The first column should be <strong>Date</strong> (DD-MM-YYYY) and remaining columns should be commodity prices. Missing values are supported for different reporting frequencies.</p>
+            <div class="upload-area" id="drop-zone">
+                <p>Drag &amp; drop your CSV file here, or</p>
+                <label for="file-input" class="btn btn-primary">Choose File</label>
+                <input type="file" id="file-input" accept=".csv" hidden>
+                <p class="small-text">Or <a href="#" id="load-sample">load sample data</a> to explore the dashboard</p>
+            </div>
+            <div id="file-info" class="hidden">
+                <p id="file-name"></p>
+                <p id="data-summary"></p>
+                <button id="clear-data" class="btn btn-secondary">Clear &amp; Upload New</button>
+            </div>
+        </section>
+
+        <!-- Dashboard (hidden until data loaded) -->
+        <div id="dashboard" class="hidden">
+
+            <!-- Last Updated -->
+            <section class="card info-bar">
+                <span id="last-updated"></span>
+                <span id="data-range"></span>
+                <button id="refresh-btn" class="btn btn-primary btn-sm">↻ Refresh / Update Data</button>
+            </section>
+
+            <!-- Period Returns -->
+            <section class="card">
+                <h2>📈 Period Returns</h2>
+                <p>Returns calculated from the latest available price for each commodity.</p>
+                <div class="table-container">
+                    <table id="period-returns-table">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>Latest Price</th>
+                                <th>1W</th>
+                                <th>1M</th>
+                                <th>3M</th>
+                                <th>6M</th>
+                                <th>12M</th>
+                                <th>2Y</th>
+                                <th>3Y</th>
+                                <th>5Y</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Calendar Year Returns -->
+            <section class="card">
+                <h2>📅 Calendar Year Returns (Jan–Dec)</h2>
+                <div class="table-container">
+                    <table id="cy-returns-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Financial Year Returns -->
+            <section class="card">
+                <h2>🏦 Financial Year Returns (Apr–Mar)</h2>
+                <div class="table-container">
+                    <table id="fy-returns-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Weekly Movement -->
+            <section class="card">
+                <h2>📊 Weekly Movement (Last 12 Weeks)</h2>
+                <p>Week-over-week percentage changes for each commodity.</p>
+                <div class="table-container">
+                    <table id="weekly-movement-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Charts -->
+            <section class="card">
+                <h2>📉 Price Trends</h2>
+                <div class="chart-controls">
+                    <label for="chart-commodity">Commodity:</label>
+                    <select id="chart-commodity"></select>
+                    <label for="chart-period">Period:</label>
+                    <select id="chart-period">
+                        <option value="3M">3 Months</option>
+                        <option value="6M">6 Months</option>
+                        <option value="1Y" selected>1 Year</option>
+                        <option value="3Y">3 Years</option>
+                        <option value="ALL">All Data</option>
+                    </select>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="price-chart"></canvas>
+                </div>
+            </section>
+
+            <!-- Returns Heatmap Chart -->
+            <section class="card">
+                <h2>🔥 Period Returns Comparison</h2>
+                <div class="chart-wrapper">
+                    <canvas id="returns-bar-chart"></canvas>
+                </div>
+            </section>
+
+            <!-- Volatility Analysis -->
+            <section class="card">
+                <h2>⚡ Volatility Analysis (Annualized)</h2>
+                <p>Standard deviation of daily returns, annualized (×√252).</p>
+                <div class="table-container">
+                    <table id="volatility-table">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>30-Day Vol</th>
+                                <th>90-Day Vol</th>
+                                <th>1-Year Vol</th>
+                                <th>Overall Vol</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Drawdown Analysis -->
+            <section class="card">
+                <h2>📉 Maximum Drawdown</h2>
+                <p>Maximum peak-to-trough decline over the full data period.</p>
+                <div class="table-container">
+                    <table id="drawdown-table">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>Max Drawdown</th>
+                                <th>Peak Date</th>
+                                <th>Trough Date</th>
+                                <th>Peak Price</th>
+                                <th>Trough Price</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Summary Statistics -->
+            <section class="card">
+                <h2>📋 Summary Statistics</h2>
+                <div class="table-container">
+                    <table id="summary-table">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>Data Points</th>
+                                <th>Frequency</th>
+                                <th>Min</th>
+                                <th>Max</th>
+                                <th>Average</th>
+                                <th>Current</th>
+                                <th>% from High</th>
+                                <th>% from Low</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Commodity Price Insights Dashboard &mdash; Data is uploaded locally and processed in your browser. No data is sent to any server.</p>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/returns.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
