@@ -237,78 +237,7 @@
     }
 
     /* --- Volatility --- */
-    function renderVolatility() {
-        var tbody = document.querySelector('#volatility-table tbody');
-        tbody.innerHTML = '';
-
-        commodityNames.forEach(function (name) {
-            var entries = commodityData[name];
-            var vol30 = Returns.volatility(entries, 30);
-            var vol90 = Returns.volatility(entries, 90);
-            var vol1y = Returns.volatility(entries, 252);
-            var volAll = Returns.volatility(entries);
-
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
-                '<td>' + fmtVol(vol30) + '</td>' +
-                '<td>' + fmtVol(vol90) + '</td>' +
-                '<td>' + fmtVol(vol1y) + '</td>' +
-                '<td>' + fmtVol(volAll) + '</td>';
-            tbody.appendChild(tr);
-        });
-    }
-
-    function fmtVol(v) {
-        if (v === null || v === undefined) return '<span class="neutral">—</span>';
-        return (v * 100).toFixed(2) + '%';
-    }
-
-    /* --- Drawdown --- */
-    function renderDrawdown() {
-        var tbody = document.querySelector('#drawdown-table tbody');
-        tbody.innerHTML = '';
-
-        commodityNames.forEach(function (name) {
-            var dd = Returns.maxDrawdown(commodityData[name]);
-            if (!dd) return;
-
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
-                '<td class="negative">' + (dd.maxDrawdown * -100).toFixed(2) + '%</td>' +
-                '<td>' + Utils.formatDateShort(dd.peakDate) + '</td>' +
-                '<td>' + Utils.formatDateShort(dd.troughDate) + '</td>' +
-                '<td>' + Utils.formatNumber(dd.peakPrice) + '</td>' +
-                '<td>' + Utils.formatNumber(dd.troughPrice) + '</td>';
-            tbody.appendChild(tr);
-        });
-    }
-
-    /* --- Summary --- */
-    function renderSummary() {
-        var tbody = document.querySelector('#summary-table tbody');
-        tbody.innerHTML = '';
-
-        commodityNames.forEach(function (name) {
-            var s = Returns.summaryStats(commodityData[name]);
-            if (!s) return;
-
-            var fmtHigh = Utils.formatReturn(s.pctFromHigh);
-            var fmtLow = Utils.formatReturn(s.pctFromLow);
-
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
-                '<td>' + s.count + '</td>' +
-                '<td>' + s.frequency + '</td>' +
-                '<td>' + Utils.formatNumber(s.min) + '</td>' +
-                '<td>' + Utils.formatNumber(s.max) + '</td>' +
-                '<td>' + Utils.formatNumber(s.avg) + '</td>' +
-                '<td>' + Utils.formatNumber(s.current) + '</td>' +
-                '<td class="' + fmtHigh.className + '">' + fmtHigh.text + '</td>' +
-                '<td class="' + fmtLow.className + '">' + fmtLow.text + '</td>';
-            tbody.appendChild(tr);
-        });
-    }
-
+    
     /* --- Charts Setup --- */
     function setupCharts() {
         chartCommodity.innerHTML = '';
