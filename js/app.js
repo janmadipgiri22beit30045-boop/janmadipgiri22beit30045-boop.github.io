@@ -237,7 +237,92 @@
     }
 
     /* --- Volatility --- */
-    
+    function renderVolatility() {
+        var tbody = document.querySelector('#volatility-table tbody');
+        tbody.innerHTML = '';
+        var MS_PER_DAY = 86400000;
+
+        commodityNames.forEach(function (name) {
+            var entries = commodityData[name];
+            var latest = entries[entries.length - 1].date;
+
+            function filterByDays(days) {
+                var cutoff = new Date(latest.getTime() - days * MS_PER_DAY);
+                return entries.filter(function (e) { return e.date >= cutoff; });
+            }
+
+            var vol30  = Returns.volatility(filterByDays(30));
+            var vol90  = Returns.volatility(filterByDays(90));
+            var vol1Y  = Returns.volatility(filterByDays(365));
+            var volAll = Returns.volatility(entries);
+
+            function fmtVol(v) {
+                if (v === null || v === undefined || isNaN(v)) return '<td class="neutral">—</td>';
+                return '<td>' + (v * 100).toFixed(2) + '%</td>';
+            }
+
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
+                fmtVol(vol30) + fmtVol(vol90) + fmtVol(vol1Y) + fmtVol(volAll);
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* --- Max Drawdown --- */
+    function renderDrawdown() {
+        var tbody = document.querySelector('#drawdown-table tbody');
+        tbody.innerHTML = '';
+
+        commodityNames.forEach(function (name) {
+            var dd = Returns.maxDrawdown(commodityData[name]);
+            var tr = document.createElement('tr');
+
+            if (!dd || dd.maxDrawdown === 0) {
+                tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
+                    '<td class="neutral">—</td><td class="neutral">—</td>' +
+                    '<td class="neutral">—</td><td class="neutral">—</td><td class="neutral">—</td>';
+            } else {
+                var fmt = Utils.formatReturn(-dd.maxDrawdown);
+                tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
+                    '<td class="' + fmt.className + '">' + fmt.text + '</td>' +
+                    '<td>' + Utils.formatDateShort(dd.peakDate)   + '</td>' +
+                    '<td>' + Utils.formatNumber(dd.peakPrice)     + '</td>' +
+                    '<td>' + Utils.formatDateShort(dd.troughDate) + '</td>' +
+                    '<td>' + Utils.formatNumber(dd.troughPrice)   + '</td>';
+            }
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* --- Summary Stats --- */
+    function renderSummary() {
+        var tbody = document.querySelector('#summary-table tbody');
+        tbody.innerHTML = '';
+
+        commodityNames.forEach(function (name) {
+            var s = Returns.summaryStats(commodityData[name]);
+            var tr = document.createElement('tr');
+
+            if (!s) {
+                tr.innerHTML = '<td>' + escapeHtml(name) + '</td>' +
+                    '<td class="neutral" colspan="8">—</td>';
+            } else {
+                var fmtHigh = Utils.formatReturn(s.pctFromHigh);
+                var fmtLow  = Utils.formatReturn(s.pctFromLow);
+                tr.innerHTML = '<td>' + escapeHtml(name)          + '</td>' +
+                    '<td>'                + Utils.formatNumber(s.current) + '</td>' +
+                    '<td>'                + Utils.formatNumber(s.min)     + '</td>' +
+                    '<td>'                + Utils.formatNumber(s.max)     + '</td>' +
+                    '<td>'                + Utils.formatNumber(s.avg)     + '</td>' +
+                    '<td class="' + fmtHigh.className + '">' + fmtHigh.text + '</td>' +
+                    '<td class="' + fmtLow.className  + '">' + fmtLow.text  + '</td>' +
+                    '<td>'                + s.count                        + '</td>' +
+                    '<td>'                + escapeHtml(s.frequency)        + '</td>';
+            }
+            tbody.appendChild(tr);
+        });
+    }
+
     /* --- Charts Setup --- */
     function setupCharts() {
         chartCommodity.innerHTML = '';
