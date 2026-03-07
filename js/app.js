@@ -83,9 +83,6 @@
         renderCalendarYearReturns();
         renderFinancialYearReturns();
         renderWeeklyMovement();
-        renderVolatility();
-        renderDrawdown();
-        renderSummary();
         setupCharts();
 
         dashboard.classList.remove('hidden');
@@ -236,8 +233,6 @@
         });
     }
 
-    /* --- Volatility --- */
-    
     /* --- Charts Setup --- */
     function setupCharts() {
         chartCommodity.innerHTML = '';
