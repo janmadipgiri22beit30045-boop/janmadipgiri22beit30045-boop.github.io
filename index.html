@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurobindo Pharma (NSE: AUROPHARMA) – Financial Model</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --primary-light: #2a5ca8;
+      --accent: #e8a838;
+      --bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --text-light: #6c7a89;
+      --border: #dce1e8;
+      --green: #27ae60;
+      --red: #e74c3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 700; }
+    header .ticker {
+      background: var(--accent);
+      color: var(--primary);
+      padding: .25rem .75rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: .9rem;
+    }
+    header .subtitle { font-size: .9rem; opacity: .85; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      padding-bottom: .5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .kpi {
+      background: var(--bg);
+      border-radius: 6px;
+      padding: .75rem 1rem;
+      text-align: center;
+    }
+    .kpi .label { font-size: .75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: .5px; }
+    .kpi .value { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-top: .25rem; }
+    .kpi .value.green { color: var(--green); }
+    .kpi .value.red { color: var(--red); }
+
+    /* Tables */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      padding: .6rem .75rem;
+      text-align: right;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+    }
+    thead th:first-child { text-align: left; }
+    tbody td { padding: .5rem .75rem; text-align: right; border-bottom: 1px solid var(--border); }
+    tbody td:first-child { text-align: left; font-weight: 600; white-space: nowrap; }
+    tbody tr:hover { background: #f0f4fa; }
+    tbody tr.subtotal { font-weight: 700; background: #eef2f7; }
+    tbody tr.highlight td { background: #fef9e7; }
+    .negative { color: var(--red); }
+
+    /* DCF Inputs */
+    .dcf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .dcf-input label { display: block; font-size: .8rem; color: var(--text-light); margin-bottom: .25rem; }
+    .dcf-input input {
+      width: 100%;
+      padding: .4rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: .9rem;
+    }
+    .dcf-input input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 2px rgba(42,92,168,.15); }
+    .dcf-result {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      padding: .5rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    button.calc-btn {
+      background: var(--accent);
+      color: var(--primary);
+      border: none;
+      padding: .5rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: .9rem;
+      margin-right: 1rem;
+    }
+    button.calc-btn:hover { opacity: .9; }
+
+    /* Charts */
+    .chart-container { position: relative; width: 100%; max-height: 350px; }
+    canvas { width: 100% !important; max-height: 350px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tab-btn {
+      padding: .4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Projection row styling */
+    .projected { background: #f0faf4; font-style: italic; }
+
+    footer { text-align: center; padding: 1.5rem; color: var(--text-light); font-size: .8rem; }
+    @media (max-width: 600px) {
+      header { padding: 1rem; }
+      header h1 { font-size: 1.2rem; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Aurobindo Pharma Limited</h1>
+    <div class="subtitle">Financial Model &amp; Valuation</div>
+  </div>
+  <span class="ticker">NSE: AUROPHARMA</span>
+</header>
+
+<div class="container">
+
+  <!-- Company Overview KPIs -->
+  <section class="card">
+    <h2>Company Overview – Key Metrics (FY 2024)</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Market Cap</div>
+        <div class="value">₹71,564 Cr</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Revenue (FY24)</div>
+        <div class="value">₹29,761 Cr</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Net Profit (FY24)</div>
+        <div class="value green">₹3,421 Cr</div>
+      </div>
+      <div class="kpi">
+        <div class="label">EBITDA Margin</div>
+        <div class="value">20.3%</div>
+      </div>
+      <div class="kpi">
+        <div class="label">P/E Ratio (TTM)</div>
+        <div class="value">20.9x</div>
+      </div>
+      <div class="kpi">
+        <div class="label">ROE</div>
+        <div class="value green">16.8%</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Debt / Equity</div>
+        <div class="value">0.23</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Promoter Holding</div>
+        <div class="value">51.8%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Financial Statements Tabs -->
+  <section class="card">
+    <h2>Historical Financial Statements (₹ Crore)</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="income">Income Statement</button>
+      <button class="tab-btn" data-tab="balance">Balance Sheet</button>
+      <button class="tab-btn" data-tab="cashflow">Cash Flow</button>
+    </div>
+
+    <!-- Income Statement -->
+    <div class="tab-panel active" id="tab-income">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Particulars</th>
+              <th>FY 2020</th>
+              <th>FY 2021</th>
+              <th>FY 2022</th>
+              <th>FY 2023</th>
+              <th>FY 2024</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Revenue from Operations</td>
+              <td>20,609</td>
+              <td>23,532</td>
+              <td>23,690</td>
+              <td>25,246</td>
+              <td>29,761</td>
+            </tr>
+            <tr>
+              <td>Cost of Materials</td>
+              <td>9,893</td>
+              <td>10,748</td>
+              <td>11,225</td>
+              <td>12,105</td>
+              <td>13,587</td>
+            </tr>
+            <tr>
+              <td>Employee Benefit Expense</td>
+              <td>3,450</td>
+              <td>3,810</td>
+              <td>4,015</td>
+              <td>4,350</td>
+              <td>4,890</td>
+            </tr>
+            <tr>
+              <td>Other Expenses</td>
+              <td>3,120</td>
+              <td>3,480</td>
+              <td>3,620</td>
+              <td>3,910</td>
+              <td>4,200</td>
+            </tr>
+            <tr class="subtotal">
+              <td>EBITDA</td>
+              <td>4,146</td>
+              <td>5,494</td>
+              <td>4,830</td>
+              <td>4,881</td>
+              <td>6,044</td>
+            </tr>
+            <tr>
+              <td>EBITDA Margin (%)</td>
+              <td>20.1%</td>
+              <td>23.3%</td>
+              <td>20.4%</td>
+              <td>19.3%</td>
+              <td>20.3%</td>
+            </tr>
+            <tr>
+              <td>Depreciation &amp; Amortisation</td>
+              <td>1,180</td>
+              <td>1,340</td>
+              <td>1,450</td>
+              <td>1,520</td>
+              <td>1,640</td>
+            </tr>
+            <tr class="subtotal">
+              <td>EBIT</td>
+              <td>2,966</td>
+              <td>4,154</td>
+              <td>3,380</td>
+              <td>3,361</td>
+              <td>4,404</td>
+            </tr>
+            <tr>
+              <td>Interest Expense</td>
+              <td>320</td>
+              <td>260</td>
+              <td>210</td>
+              <td>245</td>
+              <td>280</td>
+            </tr>
+            <tr>
+              <td>Other Income</td>
+              <td>310</td>
+              <td>280</td>
+              <td>350</td>
+              <td>390</td>
+              <td>420</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Profit Before Tax</td>
+              <td>2,956</td>
+              <td>4,174</td>
+              <td>3,520</td>
+              <td>3,506</td>
+              <td>4,544</td>
+            </tr>
+            <tr>
+              <td>Tax Expense</td>
+              <td>732</td>
+              <td>1,060</td>
+              <td>858</td>
+              <td>865</td>
+              <td>1,123</td>
+            </tr>
+            <tr class="subtotal highlight">
+              <td>Net Profit</td>
+              <td>2,224</td>
+              <td>3,114</td>
+              <td>2,662</td>
+              <td>2,641</td>
+              <td>3,421</td>
+            </tr>
+            <tr>
+              <td>EPS (₹)</td>
+              <td>37.9</td>
+              <td>53.1</td>
+              <td>45.4</td>
+              <td>45.0</td>
+              <td>58.3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Balance Sheet -->
+    <div class="tab-panel" id="tab-balance">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Particulars</th>
+              <th>FY 2020</th>
+              <th>FY 2021</th>
+              <th>FY 2022</th>
+              <th>FY 2023</th>
+              <th>FY 2024</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="subtotal"><td colspan="6">Assets</td></tr>
+            <tr>
+              <td>Net Fixed Assets</td>
+              <td>9,450</td>
+              <td>10,100</td>
+              <td>10,800</td>
+              <td>11,500</td>
+              <td>12,350</td>
+            </tr>
+            <tr>
+              <td>Capital Work-in-Progress</td>
+              <td>1,800</td>
+              <td>2,100</td>
+              <td>1,950</td>
+              <td>2,200</td>
+              <td>2,400</td>
+            </tr>
+            <tr>
+              <td>Goodwill &amp; Intangibles</td>
+              <td>4,600</td>
+              <td>4,450</td>
+              <td>4,350</td>
+              <td>4,200</td>
+              <td>4,050</td>
+            </tr>
+            <tr>
+              <td>Inventories</td>
+              <td>5,200</td>
+              <td>5,550</td>
+              <td>6,100</td>
+              <td>6,800</td>
+              <td>7,200</td>
+            </tr>
+            <tr>
+              <td>Trade Receivables</td>
+              <td>4,300</td>
+              <td>4,800</td>
+              <td>4,650</td>
+              <td>5,100</td>
+              <td>5,600</td>
+            </tr>
+            <tr>
+              <td>Cash &amp; Equivalents</td>
+              <td>1,250</td>
+              <td>2,300</td>
+              <td>2,550</td>
+              <td>2,100</td>
+              <td>2,800</td>
+            </tr>
+            <tr>
+              <td>Other Current Assets</td>
+              <td>1,500</td>
+              <td>1,700</td>
+              <td>1,800</td>
+              <td>1,900</td>
+              <td>2,100</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Total Assets</td>
+              <td>28,100</td>
+              <td>31,000</td>
+              <td>32,200</td>
+              <td>33,800</td>
+              <td>36,500</td>
+            </tr>
+            <tr class="subtotal"><td colspan="6">Equity &amp; Liabilities</td></tr>
+            <tr>
+              <td>Share Capital</td>
+              <td>586</td>
+              <td>586</td>
+              <td>586</td>
+              <td>586</td>
+              <td>586</td>
+            </tr>
+            <tr>
+              <td>Reserves &amp; Surplus</td>
+              <td>16,300</td>
+              <td>18,900</td>
+              <td>20,500</td>
+              <td>22,050</td>
+              <td>24,400</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Total Equity</td>
+              <td>16,886</td>
+              <td>19,486</td>
+              <td>21,086</td>
+              <td>22,636</td>
+              <td>24,986</td>
+            </tr>
+            <tr>
+              <td>Long-term Borrowings</td>
+              <td>2,800</td>
+              <td>2,100</td>
+              <td>1,750</td>
+              <td>1,900</td>
+              <td>2,200</td>
+            </tr>
+            <tr>
+              <td>Short-term Borrowings</td>
+              <td>3,200</td>
+              <td>3,500</td>
+              <td>3,100</td>
+              <td>3,400</td>
+              <td>3,600</td>
+            </tr>
+            <tr>
+              <td>Trade Payables</td>
+              <td>3,100</td>
+              <td>3,400</td>
+              <td>3,600</td>
+              <td>3,750</td>
+              <td>3,900</td>
+            </tr>
+            <tr>
+              <td>Other Liabilities</td>
+              <td>2,114</td>
+              <td>2,514</td>
+              <td>2,664</td>
+              <td>2,114</td>
+              <td>1,814</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Total Equity &amp; Liabilities</td>
+              <td>28,100</td>
+              <td>31,000</td>
+              <td>32,200</td>
+              <td>33,800</td>
+              <td>36,500</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Cash Flow -->
+    <div class="tab-panel" id="tab-cashflow">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Particulars</th>
+              <th>FY 2020</th>
+              <th>FY 2021</th>
+              <th>FY 2022</th>
+              <th>FY 2023</th>
+              <th>FY 2024</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="subtotal"><td colspan="6">Operating Activities</td></tr>
+            <tr>
+              <td>Profit Before Tax</td>
+              <td>2,956</td>
+              <td>4,174</td>
+              <td>3,520</td>
+              <td>3,506</td>
+              <td>4,544</td>
+            </tr>
+            <tr>
+              <td>Depreciation &amp; Amortisation</td>
+              <td>1,180</td>
+              <td>1,340</td>
+              <td>1,450</td>
+              <td>1,520</td>
+              <td>1,640</td>
+            </tr>
+            <tr>
+              <td>Working Capital Changes</td>
+              <td>-610</td>
+              <td>-480</td>
+              <td>-720</td>
+              <td>-850</td>
+              <td>-600</td>
+            </tr>
+            <tr>
+              <td>Tax Paid</td>
+              <td>-700</td>
+              <td>-1,020</td>
+              <td>-830</td>
+              <td>-840</td>
+              <td>-1,090</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Net Cash from Operations</td>
+              <td>2,826</td>
+              <td>4,014</td>
+              <td>3,420</td>
+              <td>3,336</td>
+              <td>4,494</td>
+            </tr>
+            <tr class="subtotal"><td colspan="6">Investing Activities</td></tr>
+            <tr>
+              <td>Capital Expenditure</td>
+              <td>-1,850</td>
+              <td>-2,150</td>
+              <td>-1,900</td>
+              <td>-2,100</td>
+              <td>-2,350</td>
+            </tr>
+            <tr>
+              <td>Acquisitions / Investments</td>
+              <td>-400</td>
+              <td>-350</td>
+              <td>-250</td>
+              <td>-300</td>
+              <td>-200</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Net Cash from Investing</td>
+              <td>-2,250</td>
+              <td>-2,500</td>
+              <td>-2,150</td>
+              <td>-2,400</td>
+              <td>-2,550</td>
+            </tr>
+            <tr class="subtotal"><td colspan="6">Financing Activities</td></tr>
+            <tr>
+              <td>Borrowings (Net)</td>
+              <td>350</td>
+              <td>-400</td>
+              <td>-750</td>
+              <td>450</td>
+              <td>500</td>
+            </tr>
+            <tr>
+              <td>Interest Paid</td>
+              <td>-320</td>
+              <td>-260</td>
+              <td>-210</td>
+              <td>-245</td>
+              <td>-280</td>
+            </tr>
+            <tr>
+              <td>Dividends Paid</td>
+              <td>-175</td>
+              <td>-175</td>
+              <td>-293</td>
+              <td>-293</td>
+              <td>-440</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Net Cash from Financing</td>
+              <td>-145</td>
+              <td>-835</td>
+              <td>-1,253</td>
+              <td>-88</td>
+              <td>-220</td>
+            </tr>
+            <tr class="subtotal highlight">
+              <td>Net Change in Cash</td>
+              <td>431</td>
+              <td>679</td>
+              <td>17</td>
+              <td>848</td>
+              <td>1,724</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Ratios -->
+  <section class="card">
+    <h2>Key Financial Ratios</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Ratio</th>
+            <th>FY 2020</th>
+            <th>FY 2021</th>
+            <th>FY 2022</th>
+            <th>FY 2023</th>
+            <th>FY 2024</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Revenue Growth (%)</td><td>5.2%</td><td>14.2%</td><td>0.7%</td><td>6.6%</td><td>17.9%</td></tr>
+          <tr><td>EBITDA Margin (%)</td><td>20.1%</td><td>23.3%</td><td>20.4%</td><td>19.3%</td><td>20.3%</td></tr>
+          <tr><td>Net Profit Margin (%)</td><td>10.8%</td><td>13.2%</td><td>11.2%</td><td>10.5%</td><td>11.5%</td></tr>
+          <tr><td>Return on Equity (%)</td><td>14.0%</td><td>17.1%</td><td>13.1%</td><td>12.1%</td><td>16.8%</td></tr>
+          <tr><td>Return on Capital Employed (%)</td><td>15.2%</td><td>19.8%</td><td>14.9%</td><td>14.2%</td><td>17.5%</td></tr>
+          <tr><td>Debt / Equity</td><td>0.36</td><td>0.29</td><td>0.23</td><td>0.23</td><td>0.23</td></tr>
+          <tr><td>Current Ratio</td><td>1.93</td><td>2.05</td><td>2.21</td><td>2.17</td><td>2.28</td></tr>
+          <tr><td>Interest Coverage (x)</td><td>9.3x</td><td>16.0x</td><td>16.1x</td><td>13.7x</td><td>15.7x</td></tr>
+          <tr><td>Inventory Days</td><td>92</td><td>86</td><td>94</td><td>98</td><td>88</td></tr>
+          <tr><td>Receivable Days</td><td>76</td><td>74</td><td>72</td><td>74</td><td>69</td></tr>
+          <tr><td>EPS (₹)</td><td>37.9</td><td>53.1</td><td>45.4</td><td>45.0</td><td>58.3</td></tr>
+          <tr><td>Dividend per Share (₹)</td><td>3.0</td><td>3.0</td><td>5.0</td><td>5.0</td><td>7.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Revenue & Earnings Projections -->
+  <section class="card">
+    <h2>Revenue &amp; Earnings Projections (₹ Crore)</h2>
+    <div class="table-wrapper">
+      <table id="projections-table">
+        <thead>
+          <tr>
+            <th>Particulars</th>
+            <th>FY 2024 (A)</th>
+            <th>FY 2025 (E)</th>
+            <th>FY 2026 (E)</th>
+            <th>FY 2027 (E)</th>
+            <th>FY 2028 (E)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Revenue</td>
+            <td>29,761</td>
+            <td>33,830</td>
+            <td>38,156</td>
+            <td>42,734</td>
+            <td>47,648</td>
+          </tr>
+          <tr>
+            <td>Revenue Growth (%)</td>
+            <td>17.9%</td>
+            <td>13.7%</td>
+            <td>12.8%</td>
+            <td>12.0%</td>
+            <td>11.5%</td>
+          </tr>
+          <tr>
+            <td>EBITDA</td>
+            <td>6,044</td>
+            <td>7,119</td>
+            <td>8,204</td>
+            <td>9,374</td>
+            <td>10,487</td>
+          </tr>
+          <tr>
+            <td>EBITDA Margin (%)</td>
+            <td>20.3%</td>
+            <td>21.0%</td>
+            <td>21.5%</td>
+            <td>21.9%</td>
+            <td>22.0%</td>
+          </tr>
+          <tr>
+            <td>Depreciation</td>
+            <td>1,640</td>
+            <td>1,790</td>
+            <td>1,950</td>
+            <td>2,120</td>
+            <td>2,290</td>
+          </tr>
+          <tr>
+            <td>Interest Expense</td>
+            <td>280</td>
+            <td>300</td>
+            <td>310</td>
+            <td>300</td>
+            <td>280</td>
+          </tr>
+          <tr>
+            <td>Other Income</td>
+            <td>420</td>
+            <td>450</td>
+            <td>480</td>
+            <td>510</td>
+            <td>540</td>
+          </tr>
+          <tr class="subtotal">
+            <td>Profit Before Tax</td>
+            <td>4,544</td>
+            <td>5,479</td>
+            <td>6,424</td>
+            <td>7,464</td>
+            <td>8,457</td>
+          </tr>
+          <tr>
+            <td>Tax (Eff. Rate ~25%)</td>
+            <td>1,123</td>
+            <td>1,370</td>
+            <td>1,606</td>
+            <td>1,866</td>
+            <td>2,114</td>
+          </tr>
+          <tr class="subtotal highlight">
+            <td>Net Profit</td>
+            <td>3,421</td>
+            <td>4,109</td>
+            <td>4,818</td>
+            <td>5,598</td>
+            <td>6,343</td>
+          </tr>
+          <tr>
+            <td>EPS (₹)</td>
+            <td>58.3</td>
+            <td>70.1</td>
+            <td>82.1</td>
+            <td>95.5</td>
+            <td>108.2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.75rem;color:var(--text-light);margin-top:.5rem;">(A) = Actual &nbsp;|&nbsp; (E) = Estimated. Projections assume gradual margin expansion and moderating revenue growth.</p>
+  </section>
+
+  <!-- Charts -->
+  <section class="card">
+    <h2>Visual Analysis</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="chart-rev">Revenue &amp; Profit</button>
+      <button class="tab-btn" data-tab="chart-margins">Margins</button>
+      <button class="tab-btn" data-tab="chart-roe">ROE &amp; ROCE</button>
+    </div>
+    <div class="tab-panel active" id="tab-chart-rev">
+      <div class="chart-container"><canvas id="revChart"></canvas></div>
+    </div>
+    <div class="tab-panel" id="tab-chart-margins">
+      <div class="chart-container"><canvas id="marginChart"></canvas></div>
+    </div>
+    <div class="tab-panel" id="tab-chart-roe">
+      <div class="chart-container"><canvas id="roeChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- DCF Valuation Model -->
+  <section class="card">
+    <h2>DCF Valuation Model</h2>
+    <p style="font-size:.85rem;color:var(--text-light);margin-bottom:1rem;">Adjust assumptions below and click <strong>Calculate</strong> to compute the intrinsic value per share using a Discounted Cash Flow (DCF) model.</p>
+    <div class="dcf-grid">
+      <div class="dcf-input">
+        <label for="dcf-fcf">Base Free Cash Flow (₹ Cr)</label>
+        <input type="number" id="dcf-fcf" value="2144" step="50">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-growth-high">High-Growth Rate (Yr 1-5, %)</label>
+        <input type="number" id="dcf-growth-high" value="14" step="0.5" min="0" max="50">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-growth-fade">Fade-Growth Rate (Yr 6-10, %)</label>
+        <input type="number" id="dcf-growth-fade" value="10" step="0.5" min="0" max="30">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-terminal">Terminal Growth Rate (%)</label>
+        <input type="number" id="dcf-terminal" value="4" step="0.5" min="0" max="10">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-wacc">WACC / Discount Rate (%)</label>
+        <input type="number" id="dcf-wacc" value="11" step="0.5" min="1" max="25">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-shares">Shares Outstanding (Cr)</label>
+        <input type="number" id="dcf-shares" value="58.65" step="0.01" min="1">
+      </div>
+      <div class="dcf-input">
+        <label for="dcf-debt">Net Debt (₹ Cr)</label>
+        <input type="number" id="dcf-debt" value="3000" step="100">
+      </div>
+    </div>
+    <button class="calc-btn" id="dcf-calc">Calculate DCF</button>
+    <span class="dcf-result" id="dcf-result">₹ —</span>
+
+    <div class="table-wrapper" style="margin-top:1.25rem;">
+      <table id="dcf-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>FCF (₹ Cr)</th>
+            <th>Growth (%)</th>
+            <th>Discount Factor</th>
+            <th>PV of FCF (₹ Cr)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Sensitivity Analysis -->
+    <h2 style="margin-top:1.5rem;">Sensitivity Analysis – Intrinsic Value (₹/share)</h2>
+    <p style="font-size:.85rem;color:var(--text-light);margin-bottom:1rem;">WACC (columns) vs Terminal Growth Rate (rows)</p>
+    <div class="table-wrapper">
+      <table id="sensitivity-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="card" style="background:#fef9e7;">
+    <h2 style="border-color:#e8a838;">Disclaimer</h2>
+    <p style="font-size:.8rem;color:var(--text-light);">
+      This financial model is for <strong>educational and informational purposes only</strong>. The data presented is based on publicly available information and may contain approximations. This does not constitute investment advice. Always consult a qualified financial advisor before making investment decisions. Past performance is not indicative of future results.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  Aurobindo Pharma (NSE: AUROPHARMA) Financial Model &copy; 2024 – Built for analysis purposes only.
+</footer>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ── Tab Switching ── */
+  document.querySelectorAll('.tabs').forEach(function(tabContainer) {
+    tabContainer.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var parent = this.closest('.card');
+        parent.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        parent.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        var target = document.getElementById('tab-' + this.getAttribute('data-tab'));
+        if (target) target.classList.add('active');
+      });
+    });
+  });
+
+  /* ── Charts ── */
+  var labels = ['FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25E', 'FY26E', 'FY27E', 'FY28E'];
+  var revenue = [20609, 23532, 23690, 25246, 29761, 33830, 38156, 42734, 47648];
+  var ebitda  = [4146, 5494, 4830, 4881, 6044, 7119, 8204, 9374, 10487];
+  var netProfit = [2224, 3114, 2662, 2641, 3421, 4109, 4818, 5598, 6343];
+
+  function createBarLineChart(canvasId, barLabel, barData, lineLabel, lineData, chartLabels) {
+    var ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+    return new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          { label: barLabel, data: barData, backgroundColor: 'rgba(26,60,110,0.7)', borderRadius: 4, order: 2 },
+          { label: lineLabel, data: lineData, type: 'line', borderColor: '#e8a838', backgroundColor: '#e8a838',
+            borderWidth: 2, pointRadius: 4, tension: 0.3, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '₹' + (v/1000).toFixed(0) + 'K Cr'; } } } }
+      }
+    });
+  }
+
+  createBarLineChart('revChart', 'Revenue', revenue, 'Net Profit', netProfit, labels);
+
+  /* Margin Chart */
+  var ebitdaMargin = [20.1, 23.3, 20.4, 19.3, 20.3, 21.0, 21.5, 21.9, 22.0];
+  var netMargin    = [10.8, 13.2, 11.2, 10.5, 11.5, 12.1, 12.6, 13.1, 13.3];
+  var ctxM = document.getElementById('marginChart');
+  if (ctxM) {
+    new Chart(ctxM, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'EBITDA Margin (%)', data: ebitdaMargin, borderColor: '#1a3c6e', backgroundColor: 'rgba(26,60,110,0.1)',
+            fill: true, tension: 0.3, pointRadius: 4 },
+          { label: 'Net Profit Margin (%)', data: netMargin, borderColor: '#e8a838', backgroundColor: 'rgba(232,168,56,0.1)',
+            fill: true, tension: 0.3, pointRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: false, ticks: { callback: function(v) { return v + '%'; } } } }
+      }
+    });
+  }
+
+  /* ROE / ROCE Chart */
+  var roe  = [14.0, 17.1, 13.1, 12.1, 16.8];
+  var roce = [15.2, 19.8, 14.9, 14.2, 17.5];
+  var rLabels = ['FY20', 'FY21', 'FY22', 'FY23', 'FY24'];
+  var ctxR = document.getElementById('roeChart');
+  if (ctxR) {
+    new Chart(ctxR, {
+      type: 'bar',
+      data: {
+        labels: rLabels,
+        datasets: [
+          { label: 'ROE (%)', data: roe, backgroundColor: 'rgba(39,174,96,0.7)', borderRadius: 4 },
+          { label: 'ROCE (%)', data: roce, backgroundColor: 'rgba(26,60,110,0.7)', borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return v + '%'; } } } }
+      }
+    });
+  }
+
+  /* ── DCF Model ── */
+  function runDCF() {
+    var baseFCF = parseFloat(document.getElementById('dcf-fcf').value) || 2144;
+    var gHigh   = (parseFloat(document.getElementById('dcf-growth-high').value) || 14) / 100;
+    var gFade   = (parseFloat(document.getElementById('dcf-growth-fade').value) || 10) / 100;
+    var gTerm   = (parseFloat(document.getElementById('dcf-terminal').value) || 4) / 100;
+    var wacc    = (parseFloat(document.getElementById('dcf-wacc').value) || 11) / 100;
+    var shares  = parseFloat(document.getElementById('dcf-shares').value) || 58.65;
+    var netDebt = parseFloat(document.getElementById('dcf-debt').value) || 3000;
+
+    var tbody = document.querySelector('#dcf-table tbody');
+    tbody.innerHTML = '';
+
+    var totalPV = 0;
+    var fcf = baseFCF;
+    var lastFCF = 0;
+
+    for (var i = 1; i <= 10; i++) {
+      var g = i <= 5 ? gHigh : gFade;
+      fcf = fcf * (1 + g);
+      var df = Math.pow(1 + wacc, i);
+      var pv = fcf / df;
+      totalPV += pv;
+      lastFCF = fcf;
+
+      var tr = document.createElement('tr');
+      if (i > 5) tr.classList.add('projected');
+      tr.innerHTML =
+        '<td>Year ' + i + '</td>' +
+        '<td>' + fcf.toFixed(0) + '</td>' +
+        '<td>' + (g * 100).toFixed(1) + '%</td>' +
+        '<td>' + (1/df).toFixed(4) + '</td>' +
+        '<td>' + pv.toFixed(0) + '</td>';
+      tbody.appendChild(tr);
+    }
+
+    /* Terminal Value */
+    var terminalValue = (lastFCF * (1 + gTerm)) / (wacc - gTerm);
+    var pvTerminal = terminalValue / Math.pow(1 + wacc, 10);
+    totalPV += pvTerminal;
+
+    var trTerm = document.createElement('tr');
+    trTerm.classList.add('subtotal');
+    trTerm.innerHTML =
+      '<td>Terminal Value</td><td>' + terminalValue.toFixed(0) +
+      '</td><td>' + (gTerm * 100).toFixed(1) +
+      '%</td><td>' + (1 / Math.pow(1 + wacc, 10)).toFixed(4) +
+      '</td><td>' + pvTerminal.toFixed(0) + '</td>';
+    tbody.appendChild(trTerm);
+
+    var enterpriseValue = totalPV;
+    var equityValue = enterpriseValue - netDebt;
+    var intrinsicPerShare = equityValue / shares;
+
+    var trEV = document.createElement('tr');
+    trEV.classList.add('subtotal', 'highlight');
+    trEV.innerHTML = '<td colspan="4">Enterprise Value (₹ Cr)</td><td>' + enterpriseValue.toFixed(0) + '</td>';
+    tbody.appendChild(trEV);
+
+    var trEq = document.createElement('tr');
+    trEq.classList.add('subtotal', 'highlight');
+    trEq.innerHTML = '<td colspan="4">Equity Value (₹ Cr) = EV − Net Debt</td><td>' + equityValue.toFixed(0) + '</td>';
+    tbody.appendChild(trEq);
+
+    document.getElementById('dcf-result').textContent = '₹ ' + intrinsicPerShare.toFixed(0) + ' / share';
+
+    buildSensitivity();
+  }
+
+  function computeIntrinsic(baseFCF, gHigh, gFade, gTerm, wacc, shares, netDebt) {
+    var totalPV = 0;
+    var fcf = baseFCF;
+    var lastFCF = 0;
+    for (var i = 1; i <= 10; i++) {
+      var g = i <= 5 ? gHigh : gFade;
+      fcf = fcf * (1 + g);
+      totalPV += fcf / Math.pow(1 + wacc, i);
+      lastFCF = fcf;
+    }
+    if (wacc <= gTerm) return NaN;
+    var tv = (lastFCF * (1 + gTerm)) / (wacc - gTerm);
+    totalPV += tv / Math.pow(1 + wacc, 10);
+    return (totalPV - netDebt) / shares;
+  }
+
+  function buildSensitivity() {
+    var baseFCF = parseFloat(document.getElementById('dcf-fcf').value) || 2144;
+    var gHigh   = (parseFloat(document.getElementById('dcf-growth-high').value) || 14) / 100;
+    var gFade   = (parseFloat(document.getElementById('dcf-growth-fade').value) || 10) / 100;
+    var shares  = parseFloat(document.getElementById('dcf-shares').value) || 58.65;
+    var netDebt = parseFloat(document.getElementById('dcf-debt').value) || 3000;
+    var baseWacc = (parseFloat(document.getElementById('dcf-wacc').value) || 11) / 100;
+    var baseTG   = (parseFloat(document.getElementById('dcf-terminal').value) || 4) / 100;
+
+    var waccRange = [baseWacc - 0.02, baseWacc - 0.01, baseWacc, baseWacc + 0.01, baseWacc + 0.02];
+    var tgRange   = [baseTG - 0.02, baseTG - 0.01, baseTG, baseTG + 0.01, baseTG + 0.02];
+
+    var thead = document.querySelector('#sensitivity-table thead');
+    var tbody = document.querySelector('#sensitivity-table tbody');
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    var headerRow = '<th>TG \\ WACC</th>';
+    waccRange.forEach(function(w) { headerRow += '<th>' + (w * 100).toFixed(1) + '%</th>'; });
+    thead.innerHTML = '<tr>' + headerRow + '</tr>';
+
+    tgRange.forEach(function(tg) {
+      var row = '<td style="font-weight:700">' + (tg * 100).toFixed(1) + '%</td>';
+      waccRange.forEach(function(w) {
+        var val = computeIntrinsic(baseFCF, gHigh, gFade, tg, w, shares, netDebt);
+        var cls = '';
+        if (Math.abs(w - baseWacc) < 0.001 && Math.abs(tg - baseTG) < 0.001) cls = ' style="background:#e8a838;color:#fff;font-weight:700"';
+        row += '<td' + cls + '>' + (isNaN(val) ? 'N/A' : '₹' + val.toFixed(0)) + '</td>';
+      });
+      tbody.innerHTML += '<tr>' + row + '</tr>';
+    });
+  }
+
+  document.getElementById('dcf-calc').addEventListener('click', runDCF);
+
+  /* Run initial calculation */
+  runDCF();
+
+})();
+</script>
+</body>
+</html>
