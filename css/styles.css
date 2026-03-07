@@ -243,13 +243,6 @@ footer {
     color: #888;
 }
 
-/* === Volatility / Drawdown stat cells === */
-#volatility-table td:not(:first-child),
-#drawdown-table td:not(:first-child):not(.neutral),
-#summary-table td:not(:first-child) {
-    font-variant-numeric: tabular-nums;
-}
-
 /* === Utility === */
 .hidden {
     display: none !important;
