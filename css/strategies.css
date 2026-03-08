@@ -1,0 +1,320 @@
+/* === Site Navigation === */
+.site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 0.45rem 1.1rem;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.nav-link.active {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* === Investor Grid === */
+.investors-nav h2 {
+    margin-bottom: 1rem;
+}
+
+.investor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.75rem;
+}
+
+.investor-card-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.investor-card-btn:hover {
+    border-color: #0f3460;
+    background: #f0f4ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15,52,96,0.15);
+}
+
+.investor-card-btn.selected {
+    border-color: #0f3460;
+    background: #0f3460;
+    color: #fff;
+}
+
+.investor-card-btn.selected .inv-emoji {
+    filter: none;
+}
+
+.investor-card-btn.selected .inv-name,
+.investor-card-btn.selected .inv-style {
+    color: #fff;
+}
+
+.inv-emoji {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.inv-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #16213e;
+    line-height: 1.2;
+}
+
+.inv-style {
+    font-size: 0.72rem;
+    color: #888;
+    line-height: 1.2;
+}
+
+/* === Investor Header === */
+.investor-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.investor-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0f3460, #16213e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    flex-shrink: 0;
+}
+
+.investor-title {
+    font-size: 0.88rem !important;
+    color: #666 !important;
+    margin-bottom: 0.4rem !important;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: #e8f0fe;
+    color: #0f3460;
+}
+
+/* === Overview Body === */
+.overview-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .overview-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+.overview-section h3 {
+    font-size: 1rem;
+    color: #16213e;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #e8e8e8;
+    padding-bottom: 0.3rem;
+}
+
+.overview-section p {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.65;
+}
+
+.criteria-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.criteria-list li {
+    font-size: 0.85rem;
+    color: #444;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.5;
+}
+
+.criteria-list li:last-child {
+    border-bottom: none;
+}
+
+.criteria-list li::before {
+    content: "✓";
+    color: #0a8754;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+}
+
+/* === Stat Row === */
+.stat-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.stat-box {
+    flex: 1;
+    min-width: 120px;
+    background: #f8f9ff;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border: 1px solid #e8e8f8;
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #16213e;
+}
+
+.stat-value.positive { color: #0a8754; }
+.stat-value.negative { color: #d63031; }
+
+/* === Section Note === */
+.section-note {
+    font-size: 0.82rem !important;
+    color: #888 !important;
+    margin-bottom: 0.75rem !important;
+    font-style: italic;
+}
+
+/* === Backtest Stats === */
+.backtest-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.bt-stat {
+    flex: 1;
+    min-width: 130px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef1fb 100%);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border: 1px solid #dde3f5;
+}
+
+.bt-label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.bt-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #16213e;
+}
+
+.bt-value.good { color: #0a8754; }
+.bt-value.bad  { color: #d63031; }
+
+/* === Chart controls override for strategies === */
+.chart-controls {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* === Placeholder === */
+.placeholder-content {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #888;
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.placeholder-content h2 {
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* === Strategy table tweaks === */
+#stocks-table thead th {
+    white-space: nowrap;
+}
+
+/* === Responsive === */
+@media (max-width: 480px) {
+    .investor-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+    .backtest-stats {
+        flex-direction: column;
+    }
+    .stat-row {
+        flex-direction: column;
+    }
+}
