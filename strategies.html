@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World's Top Investor Strategies</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/strategies.css">
+    <script src="vendor/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>🏆 World's Top Investor Strategies</h1>
+        <p class="subtitle">Strategies, stock screens &amp; backtested results from legendary investors</p>
+        <nav class="site-nav">
+            <a href="index.html" class="nav-link">📊 Commodity Dashboard</a>
+            <a href="strategies.html" class="nav-link active">🏆 Investor Strategies</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Investor Selector -->
+        <section class="card investors-nav">
+            <h2>Select an Investor</h2>
+            <div class="investor-grid" id="investor-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Strategy Detail Panel -->
+        <div id="strategy-detail" class="hidden">
+
+            <!-- Overview -->
+            <section class="card" id="overview-card">
+                <div class="investor-header">
+                    <div class="investor-avatar" id="investor-avatar"></div>
+                    <div>
+                        <h2 id="investor-name"></h2>
+                        <p id="investor-title" class="investor-title"></p>
+                        <div id="investor-tags" class="tags"></div>
+                    </div>
+                </div>
+                <div class="overview-body">
+                    <div class="overview-section">
+                        <h3>📋 Strategy Overview</h3>
+                        <p id="strategy-overview"></p>
+                    </div>
+                    <div class="overview-section">
+                        <h3>⚙️ How It Works</h3>
+                        <ul id="how-it-works" class="criteria-list"></ul>
+                    </div>
+                </div>
+                <div class="stat-row" id="stat-row"></div>
+            </section>
+
+            <!-- Current Stocks -->
+            <section class="card">
+                <h2>📈 Current Stocks Under Strategy</h2>
+                <p class="section-note" id="stocks-note"></p>
+                <div class="table-container">
+                    <table id="stocks-table">
+                        <thead id="stocks-thead"></thead>
+                        <tbody id="stocks-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Backtested Results -->
+            <section class="card">
+                <h2>📊 Backtested Results</h2>
+                <p class="section-note" id="backtest-note"></p>
+
+                <div class="backtest-stats" id="backtest-stats"></div>
+
+                <div class="chart-controls">
+                    <label>View:</label>
+                    <button class="btn btn-sm btn-primary" id="btn-cumulative">Cumulative Return</button>
+                    <button class="btn btn-sm btn-secondary" id="btn-annual">Annual Returns</button>
+                </div>
+                <div class="chart-wrapper" style="max-height:420px;">
+                    <canvas id="backtest-chart"></canvas>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Placeholder -->
+        <section class="card" id="placeholder-card">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">👆</div>
+                <h2>Select an investor above to view their strategy</h2>
+                <p>Choose from 10 legendary investors — each with a detailed strategy breakdown, stock screen, and backtested performance chart.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Strategies &amp; data are for educational purposes only. Stock lists are indicative screens, not investment advice. Past performance does not guarantee future results.</p>
+    </footer>
+
+    <script src="js/strategies.js"></script>
+</body>
+</html>
