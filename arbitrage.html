@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Arbitrage Bot – Polymarket × Kalshi</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/strategies.css">
+    <link rel="stylesheet" href="css/arbitrage.css">
+</head>
+<body>
+    <header>
+        <h1>⚡ Live Arbitrage Bot</h1>
+        <p class="subtitle">Polymarket × Kalshi — real-time cross-platform prediction market arbitrage scanner</p>
+        <nav class="site-nav">
+            <a href="index.html" class="nav-link">📊 Commodity Dashboard</a>
+            <a href="strategies.html" class="nav-link">🏆 Investor Strategies</a>
+            <a href="arbitrage.html" class="nav-link active">⚡ Arbitrage Bot</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- How It Works -->
+        <section class="card">
+            <h2>📖 How Prediction Market Arbitrage Works</h2>
+            <div class="how-it-works">
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text"><strong>Scan Markets</strong><br>Fetch live event data from Polymarket and Kalshi prediction markets simultaneously.</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text"><strong>Match Events</strong><br>Use text similarity to identify the same event listed on both platforms.</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><strong>Find Mispricing</strong><br>When YES on one platform + NO on the other totals less than $1.00, that's an arbitrage.</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">4</div>
+                    <div class="step-text"><strong>Risk-Free Profit</strong><br>Buy both sides across platforms — regardless of outcome, you collect $1.00 for less than $1.00 invested.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="card">
+            <h2>🎛️ Bot Controls</h2>
+
+            <div class="status-bar">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Ready</span>
+            </div>
+
+            <div class="controls-row">
+                <div class="source-toggle">
+                    <button class="btn btn-sm active" id="live-toggle">🌐 Live API</button>
+                    <button class="btn btn-sm" id="demo-toggle">📦 Demo Data</button>
+                </div>
+
+                <button class="btn btn-primary" id="start-btn">▶ Start Bot</button>
+                <button class="btn btn-secondary" id="stop-btn" disabled>⏹ Stop</button>
+                <button class="btn btn-secondary" id="refresh-btn">🔄 Refresh Now</button>
+
+                <label>Interval:
+                    <select id="refresh-interval">
+                        <option value="10">10 s</option>
+                        <option value="30" selected>30 s</option>
+                        <option value="60">60 s</option>
+                        <option value="120">2 min</option>
+                    </select>
+                </label>
+
+                <label>Min Profit %:
+                    <input type="number" id="min-profit" value="0" min="0" max="50" step="0.5">
+                </label>
+
+                <label>Category:
+                    <select id="category-filter">
+                        <option value="all">All Categories</option>
+                    </select>
+                </label>
+
+                <label>Sort:
+                    <select id="sort-by">
+                        <option value="profit-desc">Profit ↓</option>
+                        <option value="profit-asc">Profit ↑</option>
+                        <option value="similarity">Match Confidence</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <div class="arb-stats">
+            <div class="arb-stat-box">
+                <div class="stat-value profit" id="stat-opp-count">0</div>
+                <div class="stat-label">Opportunities Found</div>
+            </div>
+            <div class="arb-stat-box">
+                <div class="stat-value profit" id="stat-best-profit">—</div>
+                <div class="stat-label">Best Profit %</div>
+            </div>
+            <div class="arb-stat-box">
+                <div class="stat-value profit" id="stat-avg-profit">—</div>
+                <div class="stat-label">Avg Profit %</div>
+            </div>
+            <div class="arb-stat-box">
+                <div class="stat-value" id="stat-poly-count">0</div>
+                <div class="stat-label">Polymarket Markets</div>
+            </div>
+            <div class="arb-stat-box">
+                <div class="stat-value" id="stat-kalshi-count">0</div>
+                <div class="stat-label">Kalshi Markets</div>
+            </div>
+            <div class="arb-stat-box">
+                <div class="stat-value" id="stat-last-update">—</div>
+                <div class="stat-label">Last Updated</div>
+            </div>
+        </div>
+
+        <!-- Arbitrage Opportunities -->
+        <section class="card">
+            <h2>💰 Arbitrage Opportunities</h2>
+            <div id="opportunities-container">
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <p>Click <strong>Start Bot</strong> to begin scanning for arbitrage opportunities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Market Data Tables -->
+        <section class="card">
+            <h2>🟣 Polymarket — Active Markets</h2>
+            <div class="table-container">
+                <table class="market-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>YES Price</th>
+                            <th>NO Price</th>
+                            <th>Category</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead>
+                    <tbody id="poly-markets-body">
+                        <tr><td colspan="5" style="text-align:center;color:#888;padding:1rem;">No markets loaded</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>🔵 Kalshi — Active Markets</h2>
+            <div class="table-container">
+                <table class="market-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>YES Price</th>
+                            <th>NO Price</th>
+                            <th>Category</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kalshi-markets-body">
+                        <tr><td colspan="5" style="text-align:center;color:#888;padding:1rem;">No markets loaded</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Activity Log -->
+        <section class="card">
+            <h2>📋 Activity Log</h2>
+            <div class="log-panel" id="log-panel"></div>
+        </section>
+
+    </main>
+
+    <script src="js/arbitrage.js"></script>
+</body>
+</html>
