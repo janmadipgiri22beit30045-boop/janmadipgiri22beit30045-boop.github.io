@@ -63,7 +63,7 @@
                 <button class="btn btn-secondary" id="stop-btn" disabled>⏹ Stop</button>
                 <button class="btn btn-secondary" id="refresh-btn">🔄 Refresh Now</button>
 
-                <label>Interval:
+                <label for="refresh-interval">Interval:
                     <select id="refresh-interval">
                         <option value="10">10 s</option>
                         <option value="30" selected>30 s</option>
@@ -72,17 +72,17 @@
                     </select>
                 </label>
 
-                <label>Min Profit %:
+                <label for="min-profit">Min Profit %:
                     <input type="number" id="min-profit" value="0" min="0" max="50" step="0.5">
                 </label>
 
-                <label>Category:
+                <label for="category-filter">Category:
                     <select id="category-filter">
                         <option value="all">All Categories</option>
                     </select>
                 </label>
 
-                <label>Sort:
+                <label for="sort-by">Sort:
                     <select id="sort-by">
                         <option value="profit-desc">Profit ↓</option>
                         <option value="profit-asc">Profit ↑</option>

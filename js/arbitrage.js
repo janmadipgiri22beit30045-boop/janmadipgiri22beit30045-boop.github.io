@@ -13,6 +13,7 @@
     const REFRESH_INTERVALS = { '10': 10000, '30': 30000, '60': 60000, '120': 120000 };
     const DEFAULT_INTERVAL  = 30000;
     const MIN_PROFIT_DEFAULT = 0;
+    const SIMILARITY_THRESHOLD = 0.4;
 
     // ── State ───────────────────────────────────────────────────────
     let polymarketData  = [];
@@ -190,7 +191,7 @@
                                 : m.outcomePrices;
                             yesPrice = parseFloat(prices[0]) || 0;
                             noPrice  = parseFloat(prices[1]) || 0;
-                        } catch (_e) { /* ignore parse errors */ }
+                        } catch (_e) { /* price format varies by market */ }
                     }
                     if (yesPrice === 0 && m.bestBid !== undefined) {
                         yesPrice = parseFloat(m.bestBid) || 0;
@@ -279,7 +280,7 @@
      */
     function findArbitrageOpportunities(polyMarkets, kalshiMarkets) {
         var opps = [];
-        var threshold = 0.4; // similarity threshold
+        var threshold = SIMILARITY_THRESHOLD;
 
         for (var i = 0; i < polyMarkets.length; i++) {
             for (var j = 0; j < kalshiMarkets.length; j++) {
