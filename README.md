@@ -1,9 +1,10 @@
 # Commodity Price Insights Dashboard
 
-A browser-based dashboard for analyzing commodity price data. Upload a CSV file with raw commodity prices and instantly generate period returns, yearly analysis, weekly movement tracking, volatility metrics, and more.
+A browser-based financial analysis platform with three main tools: a commodity price insights dashboard, legendary investor strategies explorer, and a live prediction market arbitrage bot.
 
 ## Features
 
+### 📊 Commodity Dashboard
 - **Period Returns**: 1W / 1M / 3M / 6M / 12M / 2Y / 3Y / 5Y returns for each commodity
 - **Calendar Year Returns**: Jan–Dec yearly performance breakdown
 - **Financial Year Returns**: Apr–Mar (Indian FY) yearly performance breakdown
@@ -15,9 +16,24 @@ A browser-based dashboard for analyzing commodity price data. Upload a CSV file 
 - **Summary Statistics**: Min, max, average, current price, and distance from highs/lows
 - **Multi-frequency Support**: Handles daily, weekly, and monthly data in the same file
 
+### ⚡ Live Arbitrage Bot (Polymarket × Kalshi)
+- **Cross-Platform Scanning**: Fetches live market data from Polymarket and Kalshi prediction markets
+- **Event Matching**: Identifies the same event listed on both platforms using text-similarity algorithms
+- **Arbitrage Detection**: Finds mispriced markets where buying YES on one platform and NO on the other costs less than $1.00
+- **Real-Time Monitoring**: Configurable auto-refresh intervals (10s / 30s / 60s / 2min)
+- **Profit Calculation**: Shows exact profit percentages, total cost, and guaranteed payout per opportunity
+- **Filtering & Sorting**: Filter by category, minimum profit threshold; sort by profit or match confidence
+- **Live API + Demo Mode**: Attempts live API connections with automatic fallback to realistic demo data
+- **Activity Log**: Real-time log of all bot actions, API calls, and discovered opportunities
+
+### 🏆 Investor Strategies
+- **10 Legendary Investors**: Complete strategy breakdowns for Greenblatt, Graham, Lynch, and more
+- **Stock Screening**: Indicative stock screens for each strategy
+- **Backtested Results**: Historical performance data with interactive charts
+
 ## CSV Format
 
-The expected CSV format has:
+The expected CSV format for the commodity dashboard has:
 - **First column**: `Date` in DD-MM-YYYY format
 - **Remaining columns**: Commodity prices (numeric values, empty cells for missing data)
 
@@ -39,6 +55,8 @@ Commodities with different reporting frequencies (daily, weekly, monthly) can co
 ## Usage
 
 Visit the hosted site or open `index.html` locally in your browser. Use the built-in sample data to explore features, or upload your own commodity price CSV.
+
+For the arbitrage bot, navigate to the **⚡ Arbitrage Bot** page and click **Start Bot** to begin scanning for cross-platform prediction market arbitrage opportunities.
 
 ## Technology
 
