@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifty Black-Scholes Option Pricer – Live</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/strategies.css">
+    <link rel="stylesheet" href="css/black-scholes.css">
+</head>
+<body>
+    <header>
+        <h1>⚡ Nifty 50 Black-Scholes Option Pricer</h1>
+        <p class="subtitle">Live option pricing with mispricing detection — dynamic updates every market tick</p>
+        <nav class="site-nav">
+            <a href="index.html"        class="nav-link">📊 Commodity Dashboard</a>
+            <a href="strategies.html"   class="nav-link">🏆 Investor Strategies</a>
+            <a href="black-scholes.html" class="nav-link active">⚡ Options Pricer</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ── Controls ── -->
+        <section class="card controls-card">
+            <div class="controls-grid">
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">📅 Expiry</label>
+                    <select id="bs-expiry" class="ctrl-select"></select>
+                </div>
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">📈 Implied Vol (σ)</label>
+                    <div class="slider-row">
+                        <input type="range" id="bs-vol" min="5" max="60" step="0.5" class="ctrl-slider">
+                        <span id="bs-vol-display" class="ctrl-val">16.5%</span>
+                    </div>
+                </div>
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">🏦 Risk-Free Rate (r)</label>
+                    <div class="slider-row">
+                        <input type="range" id="bs-rate" min="3" max="10" step="0.1" class="ctrl-slider">
+                        <span id="bs-rate-display" class="ctrl-val">6.5%</span>
+                    </div>
+                </div>
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">🎲 Market Noise (bid-ask)</label>
+                    <div class="slider-row">
+                        <input type="range" id="bs-noise" min="0" max="2" step="0.1" class="ctrl-slider">
+                        <span id="bs-noise-display" class="ctrl-val">0.4%</span>
+                    </div>
+                </div>
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">⏱ Tick Interval</label>
+                    <select id="bs-tick" class="ctrl-select">
+                        <option value="100">100 ms</option>
+                        <option value="250">250 ms</option>
+                        <option value="500" selected>500 ms</option>
+                        <option value="1000">1 s</option>
+                        <option value="2000">2 s</option>
+                    </select>
+                </div>
+
+                <div class="ctrl-group">
+                    <label class="ctrl-label">🎯 Spot Override</label>
+                    <input type="number" id="bs-spot-override" class="ctrl-input"
+                           placeholder="e.g. 22450" min="10000" max="40000" step="50">
+                </div>
+
+                <div class="ctrl-group ctrl-btn-group">
+                    <button id="bs-toggle" class="btn btn-primary active">⏸ Pause</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Live Ticker + Time ── -->
+        <section class="card ticker-card">
+            <div class="ticker-grid">
+                <div class="ticker-item">
+                    <div class="ticker-label">NIFTY 50 (Simulated Live)</div>
+                    <div id="bs-spot" class="spot-value" data-prev="">—</div>
+                </div>
+                <div class="ticker-item">
+                    <div class="ticker-label">⏳ Time to Expiry</div>
+                    <div id="bs-time-left" class="stat-value">—</div>
+                </div>
+                <div class="ticker-item">
+                    <div class="ticker-label">🔄 Market Ticks</div>
+                    <div id="bs-tick-count" class="stat-value">0</div>
+                </div>
+                <div class="ticker-item">
+                    <div class="ticker-label">📊 σ (Annualised)</div>
+                    <div id="bs-vol-live" class="stat-value">—</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── ATM Greeks Panel ── -->
+        <section class="card greeks-card">
+            <h2>🧮 ATM Option — Real-time Black-Scholes & Greeks</h2>
+            <p class="section-note">Computed at-the-money strike. Updates on every market tick.</p>
+
+            <div class="greeks-grid">
+
+                <!-- CALL -->
+                <div class="greeks-side call-side">
+                    <div class="side-header call-header">📈 CALL</div>
+                    <div class="greeks-price" id="call-price">—</div>
+                    <table class="greeks-table">
+                        <tbody>
+                            <tr><th>Δ Delta</th>   <td id="call-delta">—</td></tr>
+                            <tr><th>Γ Gamma</th>   <td id="call-gamma">—</td></tr>
+                            <tr><th>Θ Theta/day</th><td id="call-theta">—</td></tr>
+                            <tr><th>ν Vega/1%</th> <td id="call-vega">—</td></tr>
+                            <tr><th>ρ Rho/1%</th>  <td id="call-rho">—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Model info -->
+                <div class="model-info">
+                    <div class="formula-box">
+                        <div class="formula-title">Black-Scholes Formulae</div>
+                        <div class="formula">
+                            <span class="formula-var">C</span> = S·N(d₁) − K·e<sup>−rT</sup>·N(d₂)
+                        </div>
+                        <div class="formula">
+                            <span class="formula-var">P</span> = K·e<sup>−rT</sup>·N(−d₂) − S·N(−d₁)
+                        </div>
+                        <div class="formula small-formula">
+                            d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ√T)
+                        </div>
+                        <div class="formula small-formula">d₂ = d₁ − σ√T</div>
+                        <div class="formula-legend">
+                            S = spot &nbsp;·&nbsp; K = strike &nbsp;·&nbsp;
+                            T = time (years) &nbsp;·&nbsp; r = risk-free &nbsp;·&nbsp; σ = volatility
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PUT -->
+                <div class="greeks-side put-side">
+                    <div class="side-header put-header">📉 PUT</div>
+                    <div class="greeks-price" id="put-price">—</div>
+                    <table class="greeks-table">
+                        <tbody>
+                            <tr><th>Δ Delta</th>   <td id="put-delta">—</td></tr>
+                            <tr><th>Γ Gamma</th>   <td id="put-gamma">—</td></tr>
+                            <tr><th>Θ Theta/day</th><td id="put-theta">—</td></tr>
+                            <tr><th>ν Vega/1%</th> <td id="put-vega">—</td></tr>
+                            <tr><th>ρ Rho/1%</th>  <td id="put-rho">—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Mispricing Alerts ── -->
+        <section class="card alerts-card">
+            <h2>🚨 Mispricing Alerts</h2>
+            <p class="section-note">
+                Showing options where <strong>|Market Price − Model Price| ≥ 1.5%</strong>.
+                Higher deviations indicate potential arbitrage or liquidity-driven pricing.
+            </p>
+            <div id="mispricing-panel">
+                <p class="no-alerts">⏳ Waiting for market tick…</p>
+            </div>
+        </section>
+
+        <!-- ── Option Chain ── -->
+        <section class="card chain-card">
+            <h2>📋 Live Option Chain — Nifty 50</h2>
+            <p class="section-note">
+                <span class="legend-atm">■</span> ATM &nbsp;
+                <span class="legend-itm">■</span> ITM &nbsp;
+                <span class="legend-otm">■</span> OTM &nbsp;
+                <span class="legend-misprice-high">■</span> High mispricing (≥3%) &nbsp;
+                <span class="legend-misprice-med">■</span> Moderate mispricing (≥1.5%)
+            </p>
+
+            <div class="table-container">
+                <table id="option-chain" class="chain-table">
+                    <thead>
+                        <tr class="chain-super-header">
+                            <th colspan="5" class="call-header-bg">← CALLS</th>
+                            <th class="strike-header">STRIKE</th>
+                            <th colspan="5" class="put-header-bg">PUTS →</th>
+                        </tr>
+                        <tr>
+                            <!-- CALL columns -->
+                            <th class="call-col">Market ₹</th>
+                            <th class="call-col">Model ₹</th>
+                            <th class="call-col">Misprice %</th>
+                            <th class="call-col">Impl. Vol</th>
+                            <th class="call-col">Δ Delta</th>
+                            <!-- Strike -->
+                            <th class="strike-col">Strike</th>
+                            <!-- PUT columns -->
+                            <th class="put-col">Δ Delta</th>
+                            <th class="put-col">Impl. Vol</th>
+                            <th class="put-col">Misprice %</th>
+                            <th class="put-col">Model ₹</th>
+                            <th class="put-col">Market ₹</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chain-tbody">
+                        <tr><td colspan="11" class="loading-cell">⏳ Loading option chain…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── Methodology ── -->
+        <section class="card methodology-card">
+            <h2>ℹ️ Methodology & Assumptions</h2>
+            <div class="method-grid">
+                <div class="method-item">
+                    <div class="method-title">📐 Pricing Model</div>
+                    <div class="method-body">
+                        Black-Scholes-Merton (1973) European option pricing model.
+                        Assumes log-normal returns, constant volatility (σ), and continuous
+                        risk-free rate. Greeks are computed analytically.
+                    </div>
+                </div>
+                <div class="method-item">
+                    <div class="method-title">📡 Price Simulation</div>
+                    <div class="method-body">
+                        Nifty 50 spot price follows Geometric Brownian Motion (GBM) with
+                        configurable σ and r. A soft mean-reversion term keeps prices in
+                        a tradeable range. A real deployment would replace this with a live
+                        NSE/WebSocket data feed.
+                    </div>
+                </div>
+                <div class="method-item">
+                    <div class="method-title">🎲 Market Prices</div>
+                    <div class="method-body">
+                        Simulated market prices add random bid-ask spread noise plus
+                        occasional structural mispricing (±3%) to mimic real options markets
+                        with liquidity gaps, order-book imbalances, and stale quotes.
+                    </div>
+                </div>
+                <div class="method-item">
+                    <div class="method-title">🔍 Mispricing Detection</div>
+                    <div class="method-body">
+                        Mispricing = (Market Price − Model Price) / Model Price × 100%.
+                        Positive → market overpriced vs model (sell signal).
+                        Negative → market underpriced (buy signal).
+                        Thresholds: High ≥ 3%, Moderate ≥ 1.5%.
+                    </div>
+                </div>
+                <div class="method-item">
+                    <div class="method-title">⚡ Update Frequency</div>
+                    <div class="method-body">
+                        Market ticks arrive every 100–2000 ms (configurable). The render
+                        loop uses <code>requestAnimationFrame</code> for smooth DOM updates,
+                        capped at 10 Hz to keep the table readable. True microsecond
+                        resolution would require server-side streaming.
+                    </div>
+                </div>
+                <div class="method-item">
+                    <div class="method-title">📊 Implied Volatility</div>
+                    <div class="method-body">
+                        IV is back-solved from the market price using Newton-Raphson
+                        iteration. Converges in &lt; 20 iterations for typical option
+                        parameter ranges. Displayed as annualised percentage.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Black-Scholes Option Pricer — For educational purposes only. Simulated prices. Not investment advice.</p>
+    </footer>
+
+    <script src="js/black-scholes.js"></script>
+</body>
+</html>

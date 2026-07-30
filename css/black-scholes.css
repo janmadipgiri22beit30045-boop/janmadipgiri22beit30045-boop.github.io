@@ -1,0 +1,428 @@
+/* ================================================================
+   Black-Scholes Option Pricer – Stylesheet
+   ================================================================ */
+
+/* ── Controls card ────────────────────────────────────────────── */
+.controls-card { padding: 1.25rem 1.5rem; }
+
+.controls-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    align-items: flex-end;
+}
+
+.ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 160px;
+}
+
+.ctrl-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ctrl-select,
+.ctrl-input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+    color: #1a1a2e;
+}
+
+.ctrl-slider {
+    flex: 1;
+    accent-color: #0f3460;
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ctrl-val {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f3460;
+    min-width: 46px;
+    text-align: right;
+}
+
+.ctrl-btn-group {
+    justify-content: flex-end;
+}
+
+#bs-toggle.active {
+    background: #0f3460;
+}
+
+/* ── Live Ticker ──────────────────────────────────────────────── */
+.ticker-card { padding: 1rem 1.5rem; }
+
+.ticker-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+}
+
+.ticker-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.ticker-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #888;
+    font-weight: 600;
+}
+
+.spot-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #16213e;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+    letter-spacing: -0.02em;
+}
+
+.tick-up   { color: #0a8754 !important; }
+.tick-down { color: #d63031 !important; }
+
+/* ── Greeks Card ──────────────────────────────────────────────── */
+
+.greeks-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    margin-top: 0.75rem;
+}
+
+@media (max-width: 900px) {
+    .greeks-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .model-info { grid-column: 1 / -1; order: 3; }
+}
+
+@media (max-width: 560px) {
+    .greeks-grid { grid-template-columns: 1fr; }
+    .model-info  { order: 3; }
+}
+
+.greeks-side {
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid #e8e8e8;
+}
+
+.call-side { background: #f0faf5; border-color: #b2e0c8; }
+.put-side  { background: #fff5f5; border-color: #f5b8b8; }
+
+.side-header {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.call-header { color: #0a8754; }
+.put-header  { color: #d63031; }
+
+.greeks-price {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.call-side .greeks-price { color: #0a8754; }
+.put-side  .greeks-price { color: #d63031; }
+
+.greeks-table {
+    width: 100%;
+    font-size: 0.82rem;
+    border-collapse: collapse;
+}
+
+.greeks-table th {
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    padding: 0.25rem 0.4rem 0.25rem 0;
+    background: transparent;
+    white-space: nowrap;
+    position: static;
+}
+
+.greeks-table td {
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background: transparent;
+}
+
+.greeks-table tr:last-child td { border-bottom: none; }
+
+/* ── Formula Box ──────────────────────────────────────────────── */
+.model-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formula-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e0e0ff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    max-width: 280px;
+    width: 100%;
+}
+
+.formula-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.formula {
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.5;
+}
+
+.small-formula {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0.3rem;
+}
+
+.formula-var {
+    color: #ffd700;
+    font-weight: 700;
+}
+
+.formula-legend {
+    margin-top: 0.75rem;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+}
+
+/* ── Mispricing Alerts ────────────────────────────────────────── */
+
+.no-alerts {
+    color: #0a8754;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.alerts-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #d63031;
+    margin-bottom: 0.5rem;
+}
+
+.alert-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.84rem;
+}
+
+.alert-high {
+    background: #fff0f0;
+    border: 1px solid #f5b8b8;
+}
+
+.alert-med {
+    background: #fff8e8;
+    border: 1px solid #f5d878;
+}
+
+.alert-type {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 12px;
+}
+
+.overpriced {
+    background: #d63031;
+    color: #fff;
+}
+
+.underpriced {
+    background: #0a8754;
+    color: #fff;
+}
+
+.alert-strike {
+    font-weight: 700;
+    color: #16213e;
+}
+
+.alert-detail {
+    color: #555;
+    flex: 1;
+}
+
+/* ── Option Chain Table ────────────────────────────────────────── */
+.chain-table {
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.chain-super-header th {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+}
+
+.call-header-bg { background: #0a6640 !important; }
+.put-header-bg  { background: #8b1a1a !important; }
+.strike-header  { background: #16213e !important; text-align: center !important; }
+
+.call-col {
+    background: #1a4d35 !important;
+    color: #d0fce8 !important;
+    text-align: right !important;
+}
+
+.put-col {
+    background: #4d1a1a !important;
+    color: #fcd0d0 !important;
+    text-align: right !important;
+}
+
+.strike-col {
+    background: #16213e !important;
+    color: #fff !important;
+    text-align: center !important;
+}
+
+/* Row types */
+.atm-row td       { background: #fffde7; }
+.atm-highlight td { background: #fff9c4 !important; font-weight: 600; }
+.itm-row td       { background: #f0faf5; }
+.otm-row td       { background: #fff; }
+
+.strike-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    background: #f0f2f8 !important;
+    color: #16213e !important;
+}
+
+.atm-strike {
+    background: #fff9c4 !important;
+    color: #b8860b !important;
+    font-weight: 900 !important;
+}
+
+.num         { text-align: right !important; font-variant-numeric: tabular-nums; }
+.model-price { color: #0f3460; font-style: italic; }
+.iv-cell     { color: #6a0dad; }
+.delta-cell  { color: #333; }
+
+/* Mispricing colours */
+.misprice-high { color: #d63031 !important; font-weight: 700 !important; }
+.misprice-med  { color: #e67e00 !important; font-weight: 600 !important; }
+.misprice-low  { color: #888 !important; }
+
+.misprice-badge {
+    display: inline-block;
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.misprice-high .misprice-badge { background: #ffe0e0; color: #d63031; }
+.misprice-med  .misprice-badge { background: #fff4cc; color: #b86000; }
+
+.pos-strong { color: #0a8754 !important; font-weight: 700 !important; }
+.pos        { color: #3ab07a !important; }
+.neg-strong { color: #d63031 !important; font-weight: 700 !important; }
+.neg        { color: #e06060 !important; }
+
+.loading-cell {
+    text-align: center !important;
+    color: #888;
+    padding: 2rem !important;
+}
+
+/* ── Legend ────────────────────────────────────────────────────── */
+.legend-atm           { color: #b8860b; }
+.legend-itm           { color: #0a8754; }
+.legend-otm           { color: #888;    }
+.legend-misprice-high { color: #d63031; }
+.legend-misprice-med  { color: #e67e00; }
+
+/* ── Methodology ────────────────────────────────────────────────── */
+.method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.method-item {
+    background: #f8f9ff;
+    border: 1px solid #e0e4f0;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+}
+
+.method-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f3460;
+    margin-bottom: 0.35rem;
+}
+
+.method-body {
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.method-body code {
+    background: #e8e8f0;
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    color: #0f3460;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .controls-grid { gap: 0.75rem; }
+    .ctrl-group    { min-width: 130px; }
+    .spot-value    { font-size: 1.5rem; }
+    .chain-table   { font-size: 0.72rem; }
+}
